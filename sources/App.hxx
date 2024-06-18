@@ -13,6 +13,7 @@ public:
 
 private:
     bool active = false;
+    int timeBuffer = 0;
     
     SDL_Window* window;
     SDL_Surface* surface;

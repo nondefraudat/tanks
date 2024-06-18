@@ -44,6 +44,11 @@ void App::processEvents() noexcept {
 }
 
 void App::render() noexcept {
+    int current = SDL_GetTicks();
+    if (current - timeBuffer < (1000/12)) {
+        return;
+    }
+    timeBuffer = current - timeBuffer;
     SDL_FillSurfaceRect(surface, nullptr, 0xAAAAAAAA);
     drawSquare();
     SDL_UpdateWindowSurface(window);
