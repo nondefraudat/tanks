@@ -1,6 +1,6 @@
-#include "App.hxx"
+#include "game.hxx"
 
 int main() noexcept {
-    App::instance().start();
+    ::game::start();
     return 0;
 }

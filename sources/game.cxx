@@ -1,8 +1,8 @@
-#include "App.hxx"
+#include "game.hxx"
 #include <SDL3/SDL.h>
 #include <cassert>
 
-App::App() noexcept {
+game::game() noexcept {
     assert(SDL_Init( SDL_INIT_VIDEO ) >= 0);
     window = SDL_CreateWindow("test", 400, 400, NULL);
     assert(window != nullptr);
@@ -10,17 +10,16 @@ App::App() noexcept {
     assert(surface != nullptr);
 }
 
-App::~App() noexcept {
+game::~game() noexcept {
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-App &App::instance() noexcept {
-    static App g;
-    return g;
+void game::start() noexcept {
+    game().eventLoop();
 }
 
-void App::start() noexcept {
+void game::eventLoop() noexcept {
     active = true;
     while (active) {
         processEvents();
@@ -28,7 +27,8 @@ void App::start() noexcept {
     }
 }
 
-void App::processEvents() noexcept {
+void game::processEvents() noexcept
+{
     SDL_Event eventBuffer;
     while (SDL_PollEvent(&eventBuffer)) {
         switch (eventBuffer.type)
@@ -43,7 +43,7 @@ void App::processEvents() noexcept {
     }
 }
 
-void App::render() noexcept {
+void game::render() noexcept {
     int current = SDL_GetTicks();
     if (current - timeBuffer < (1000/12)) {
         return;
@@ -54,7 +54,7 @@ void App::render() noexcept {
     SDL_UpdateWindowSurface(window);
 }
 
-void App::processKeyEvent(int key) noexcept {
+void game::processKeyEvent(int key) noexcept {
     switch (key)
     {
     case SDLK_UP:
@@ -72,7 +72,7 @@ void App::processKeyEvent(int key) noexcept {
     }
 }
 
-void App::drawSquare() noexcept {
+void game::drawSquare() noexcept {
     SDL_Rect rect { x - 8, y - 8, 16, 16 };
     SDL_FillSurfaceRect(surface, &rect, 0xFFFFFFFF);
 }

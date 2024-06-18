@@ -3,13 +3,12 @@
 class SDL_Window;
 class SDL_Surface;
 
-class App {
-    App() noexcept;
-    ~App() noexcept;
+class game {
+    game() noexcept;
+    ~game() noexcept;
 
 public:
-    static App &instance() noexcept;
-    void start() noexcept;
+    static void start() noexcept;
 
 private:
     bool active = false;
@@ -19,6 +18,8 @@ private:
     SDL_Surface* surface;
 
     int x = 20, y = 20;
+
+    void eventLoop() noexcept;
 
     void processEvents() noexcept;
     void render() noexcept;
