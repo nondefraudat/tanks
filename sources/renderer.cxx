@@ -1,6 +1,7 @@
 #include "renderer.hxx"
 
 #include <glm/ext.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include <cassert>
@@ -43,8 +44,19 @@ void renderer::clear() noexcept {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void renderer::move_test_figure(glm::vec3 movement) noexcept {
+    auto translated = glm::mat3_cast(rotation)*movement;
+    model = glm::translate(model, translated);
+}
+
+void renderer::rotate_test_figure(float angle) noexcept {
+    rotation = glm::rotate(rotation, angle, { 0.f, 0.f, 1.f });
+}
+
+
 void renderer::render_test_figure() noexcept {
-    glUniformMatrix4fv(model_id, 1, GL_FALSE, glm::value_ptr(model));
+    auto temp_model = model*glm::mat4_cast(rotation);
+    glUniformMatrix4fv(model_id, 1, GL_FALSE, glm::value_ptr(temp_model));
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
@@ -127,6 +139,8 @@ void renderer::init_test_figure() noexcept {
     model = glm::mat4(1.f);
     model = glm::scale(model, glm::vec3(.05f));
 
+    rotation = glm::quat_cast(glm::mat4(1.f));
+
     glm::vec3 camera(0.f, 0.f, 1.f);
     glm::vec3 world_up(0.f, 1.f, 0.f);
     glm::vec3 camera_front(0.f, 0.f, -1.f);
@@ -138,8 +152,4 @@ void renderer::init_test_figure() noexcept {
     float farPlane = 5000.f;
     projection = glm::perspective(glm::radians(fov),
             1.f, nearPlane, farPlane);
-}
-
-void renderer::move_test_figure(glm::vec3 movement) noexcept {
-    model = glm::translate(model, movement);
 }

@@ -29,3 +29,4 @@ target_include_directories(${PROJECT_NAME}
 		PUBLIC ${PROJECT_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}
 		PUBLIC ${PROJECT_LINK_LIBRARIES})
+		

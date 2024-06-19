@@ -2,13 +2,10 @@
 
 #include <cstdint>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 struct SDL_Window;
 struct SDL_GLContextState;
-
-struct point {
-    float x, y;
-};
 
 class renderer {
 protected:
@@ -18,6 +15,7 @@ protected:
 public:
     void clear() noexcept;
     void move_test_figure(glm::vec3 movement) noexcept;
+    void rotate_test_figure(float angle) noexcept;
     void render_test_figure() noexcept;
     void update() noexcept;
 
@@ -30,6 +28,7 @@ private:
 
     glm::mat4 model, view, projection;
     uint32_t model_id, view_id, projection_id;
+    glm::quat rotation;
     
     void init_sdl() noexcept;
     void init_gl() noexcept;

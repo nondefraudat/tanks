@@ -40,10 +40,10 @@ void game::process_key(int key) noexcept {
         move_test_figure({ 0.f, -.1f, 0.f });
         break;
     case SDLK_LEFT:
-        move_test_figure({ -.1f, 0.f, 0.f });
+        rotate_test_figure(.1f);
         break;
     case SDLK_RIGHT:
-        move_test_figure({ .1f, 0.f, 0.f });
+        rotate_test_figure(-.1f);
         break;
     }
 }
