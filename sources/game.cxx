@@ -1,34 +1,21 @@
 #include "game.hxx"
 #include <SDL3/SDL.h>
-#include <cassert>
-
-game::game() noexcept {
-    assert(SDL_Init( SDL_INIT_VIDEO ) >= 0);
-    window = SDL_CreateWindow("test", 400, 400, NULL);
-    assert(window != nullptr);
-    surface = SDL_GetWindowSurface(window);
-    assert(surface != nullptr);
-}
-
-game::~game() noexcept {
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
 
 void game::start() noexcept {
-    game().eventLoop();
-}
-
-void game::eventLoop() noexcept {
     active = true;
     while (active) {
-        processEvents();
-        render();
+        process_events();
+        Uint64 current_ticks = SDL_GetTicks();
+        if (current_ticks - time_buffer > (1000/12)) {
+            time_buffer = current_ticks;
+            clear();
+            render_test_figure();
+            update();
+        }
     }
 }
 
-void game::processEvents() noexcept
-{
+void game::process_events() noexcept {
     SDL_Event eventBuffer;
     while (SDL_PollEvent(&eventBuffer)) {
         switch (eventBuffer.type)
@@ -37,42 +24,26 @@ void game::processEvents() noexcept
             active = false;
             break;
         case SDL_EVENT_KEY_DOWN:
-            processKeyEvent(eventBuffer.key.keysym.sym);
+            process_key(eventBuffer.key.keysym.sym);
             break;
         }
     }
 }
 
-void game::render() noexcept {
-    int current = SDL_GetTicks();
-    if (current - timeBuffer < (1000/12)) {
-        return;
-    }
-    timeBuffer = current - timeBuffer;
-    SDL_FillSurfaceRect(surface, nullptr, 0xAAAAAAAA);
-    drawSquare();
-    SDL_UpdateWindowSurface(window);
-}
-
-void game::processKeyEvent(int key) noexcept {
+void game::process_key(int key) noexcept {
     switch (key)
     {
     case SDLK_UP:
-        y -= 5;
+        move_test_figure({ 0.f, .1f, 0.f });
         break;
     case SDLK_DOWN:
-        y += 5;
+        move_test_figure({ 0.f, -.1f, 0.f });
         break;
     case SDLK_LEFT:
-        x -= 5;
+        move_test_figure({ -.1f, 0.f, 0.f });
         break;
     case SDLK_RIGHT:
-        x += 5;
+        move_test_figure({ .1f, 0.f, 0.f });
         break;
     }
-}
-
-void game::drawSquare() noexcept {
-    SDL_Rect rect { x - 8, y - 8, 16, 16 };
-    SDL_FillSurfaceRect(surface, &rect, 0xFFFFFFFF);
 }
