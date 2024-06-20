@@ -12,6 +12,12 @@ void game::start() noexcept {
             render_test_figure();
             update();
         }
+        if (up^down) {
+            move_test_figure({ 0.f, 1e-3f*(up ? 1 : -1), 0.f });
+        }
+        if (left^right) {
+            rotate_test_figure(2e-6f*(left ? 1 : -1));
+        }
     }
 }
 
@@ -23,27 +29,31 @@ void game::process_events() noexcept {
         case SDL_EVENT_QUIT:
             active = false;
             break;
+        case SDL_EVENT_KEY_UP:
         case SDL_EVENT_KEY_DOWN:
-            process_key(eventBuffer.key.keysym.sym);
+            process_key(eventBuffer.key.keysym.sym,
+                    eventBuffer.key.state);
             break;
         }
     }
 }
 
-void game::process_key(int key) noexcept {
+#include <iostream>
+
+void game::process_key(int key, bool state) noexcept {
     switch (key)
     {
     case SDLK_UP:
-        move_test_figure({ 0.f, .1f, 0.f });
+        up = state;
         break;
     case SDLK_DOWN:
-        move_test_figure({ 0.f, -.1f, 0.f });
+        down = state;
         break;
     case SDLK_LEFT:
-        rotate_test_figure(.1f);
+        left = state;
         break;
     case SDLK_RIGHT:
-        rotate_test_figure(-.1f);
+        right = state;
         break;
     }
 }
