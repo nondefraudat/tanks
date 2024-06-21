@@ -23,5 +23,5 @@ private:
     void ProcessEvents() noexcept;
     uint64_t DeltaTime() noexcept;
 
-    void ProcessKey(int key) noexcept;
+    void ProcessKey(int key, bool state) noexcept;
 };

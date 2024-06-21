@@ -21,29 +21,21 @@ void Figure::Update(uint64_t deltaTime) noexcept {
     if (angleSpeed) {
         rotation = rotate(rotation,
                 angleSpeed*seconds, { 0.f, 0.f, 1.f });
+        angleSpeed = 0.f;
     }
-    angleSpeed = 0.f;
 
-    speed += pushingForce*seconds;
-    if (speed > maxSpeed) {
-        speed = maxSpeed;
-    }
-    else if (speed < minSpeed) {
-        speed = minSpeed;
-    }
-    if (speed) {
-        auto movment = mat3_cast(rotation)*vec3(0.f, speed, 0.f);
+    if (movementSpeed) {
+        auto movment = mat3_cast(rotation)*vec3(0.f, movementSpeed*seconds, 0.f);
         model = translate(model, movment);
-        pushingForce = speed = 0;
     }
 }
 
-void Figure::PushingForce(float power) noexcept {
-    pushingForce = power;
+void Figure::Move(int direction) noexcept {
+    movementSpeed = 10.f*direction;
 }
 
-void Figure::RotatingForce(float angleSpeed) noexcept {
-    this->angleSpeed = angleSpeed;
+void Figure::Rotate(int direction) noexcept {
+    angleSpeed = 30.f*direction;
 }
 
 glm::mat4 Figure::Model() noexcept {

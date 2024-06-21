@@ -39,8 +39,10 @@ void Game::ProcessEvents() noexcept {
         case SDL_EVENT_QUIT:
             isActive = false;
             break;
+        case SDL_EVENT_KEY_UP:
         case SDL_EVENT_KEY_DOWN:
-            ProcessKey(eventBuffer.key.keysym.sym);
+            ProcessKey(eventBuffer.key.keysym.sym,
+                    eventBuffer.key.state);
             break;
         }
     }
@@ -54,20 +56,20 @@ uint64_t Game::DeltaTime() noexcept {
     return deltaTime;
 }
 
-void Game::ProcessKey(int key) noexcept {
+void Game::ProcessKey(int key, bool state) noexcept {
     switch (key)
     {
     case SDLK_UP:
-        figure->PushingForce(1.f);
+        figure->Move(1*state);
         break;
     case SDLK_DOWN:
-        figure->PushingForce(-1.f);
+        figure->Move(-1*state);
         break;
     case SDLK_LEFT:
-        figure->RotatingForce(45.f);
+        figure->Rotate(1*state);
         break;
     case SDLK_RIGHT:
-        figure->RotatingForce(-45.f);
+        figure->Rotate(-1*state);
         break;
     }
 }
