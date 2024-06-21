@@ -1,59 +1,73 @@
-#include "game.hxx"
+#include "Game.hxx"
 #include <SDL3/SDL.h>
 
-void game::start() noexcept {
-    active = true;
-    while (active) {
-        process_events();
-        Uint64 current_ticks = SDL_GetTicks();
-        if (current_ticks - time_buffer > (1000/12)) {
-            time_buffer = current_ticks;
-            clear();
-            render_test_figure();
-            update();
-        }
-        if (up^down) {
-            move_test_figure({ 0.f, 1e-3f*(up ? 1 : -1), 0.f });
-        }
-        if (left^right) {
-            rotate_test_figure(2e-6f*(left ? 1 : -1));
-        }
+using namespace std;
+
+Game::Game() noexcept {
+    figure = world.Place(Figure());
+    renderer.Target(&world);
+    figure->Init(&renderer);
+    Camera camera;
+    camera.Chase(figure);
+    world.PlaceCamera(move(camera));
+}
+
+Game::~Game() noexcept {
+    world.Release();
+}
+
+void Game::Start() noexcept {
+    static Game game;
+    game.Loop();
+}
+
+void Game::Loop() noexcept {
+    isActive = true;
+    while (isActive) {
+        ProcessEvents();
+        uint64_t deltaTime = DeltaTime();
+        world.Update(deltaTime);
+        renderer.Render(deltaTime);
     }
 }
 
-void game::process_events() noexcept {
+void Game::ProcessEvents() noexcept {
     SDL_Event eventBuffer;
     while (SDL_PollEvent(&eventBuffer)) {
         switch (eventBuffer.type)
         {
         case SDL_EVENT_QUIT:
-            active = false;
+            isActive = false;
             break;
-        case SDL_EVENT_KEY_UP:
         case SDL_EVENT_KEY_DOWN:
-            process_key(eventBuffer.key.keysym.sym,
-                    eventBuffer.key.state);
+            ProcessKey(eventBuffer.key.keysym.sym);
             break;
         }
     }
 }
 
-#include <iostream>
+uint64_t Game::DeltaTime() noexcept {
+    static uint64_t timeCache = 0;
+    uint64_t currentTime = SDL_GetTicks(); 
+    uint64_t deltaTime = currentTime - timeCache;
+    timeCache = currentTime;
+    return deltaTime;
+}
 
-void game::process_key(int key, bool state) noexcept {
+void Game::ProcessKey(int key) noexcept {
     switch (key)
     {
     case SDLK_UP:
-        up = state;
+        figure->PushingForce(1.f);
         break;
     case SDLK_DOWN:
-        down = state;
+        figure->PushingForce(-1.f);
         break;
     case SDLK_LEFT:
-        left = state;
+        figure->RotatingForce(45.f);
         break;
     case SDLK_RIGHT:
-        right = state;
+        figure->RotatingForce(-45.f);
         break;
     }
 }

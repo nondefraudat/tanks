@@ -1,38 +1,35 @@
 #pragma once
 
-#include "shader_program.hxx"
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include "Program.hxx"
 #include <cstdint>
+
+class World;
+class Figure;
 
 struct SDL_Window;
 struct SDL_GLContextState;
 
-class renderer : shader_program {
-protected:
-    renderer() noexcept;
-    ~renderer() noexcept;
-
+class Renderer {
 public:
-    void clear() noexcept;
-    void move_test_figure(glm::vec3 movement) noexcept;
-    void rotate_test_figure(float angle) noexcept;
-    void render_test_figure() noexcept;
-    // void render_figure() noexcept;
-    void update() noexcept;
+    Renderer() noexcept;
+    ~Renderer() noexcept;
+    
+    void Target(World *world) noexcept;
+    void Render(uint64_t deltaTime) noexcept;
+
+    void EnableFigure(Figure *figure) noexcept;
+    void DisableFigure(Figure *figure) noexcept;
 
 private:
+    World *world;
+
     SDL_Window *window;
-    SDL_GLContextState *gl_context;
+    SDL_GLContextState *glContext;
 
-    int window_width, window_height;
+    Program program;
 
-    uint32_t shader_program;
-    uint32_t vbo, vao, ebo;
+    uint64_t deltaCache = 0;
 
-    glm::quat rotation;
-    
-    void init_sdl() noexcept;
-    void init_gl() noexcept;
-    void init_test_figure() noexcept;
+    void InitSDL() noexcept;
+    void InitOpenGL() noexcept;
 };

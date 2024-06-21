@@ -1,21 +1,27 @@
 #pragma once
 
-#include "renderer.hxx"
-#include <cstdint>
+#include "Renderer.hxx"
+#include "World.hxx"
+#include "Figure.hxx"
 
-struct SDL_Window;
-struct SDL_GLContextState;
+class Game {
+    Game() noexcept;
+    ~Game() noexcept;
 
-class game : renderer {
 public:
-    void start() noexcept;
+    static void Start() noexcept;
 
 private:
-    bool active = false;
-    uint64_t time_buffer = 0;
-    bool up = false, down = false,
-            left = false, right = false;
+    World world;
+    Renderer renderer;
+    Figure *figure;
 
-    void process_events() noexcept;
-    void process_key(int key, bool state) noexcept;
+    bool isActive = false;
+
+    void Loop() noexcept;
+
+    void ProcessEvents() noexcept;
+    uint64_t DeltaTime() noexcept;
+
+    void ProcessKey(int key) noexcept;
 };

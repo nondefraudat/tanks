@@ -1,8 +1,6 @@
-#include "game.hxx"
-
-#include "logger.hxx"
+#include "Game.hxx"
 
 int main() noexcept {
-    ::game().start();
+    Game::Start();
     return 0;
 }
