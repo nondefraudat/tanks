@@ -14,11 +14,11 @@ Figure *World::Place(Figure &&figure) noexcept {
     return &figures.back();
 }
 
-void World::Update(uint64_t deltaTime) noexcept {
+void World::Update(float delta) noexcept {
     for (Figure &figure : figures) {
-        figure.Update(deltaTime);
+        figure.Update(delta);
     }
-    camera.Update(deltaTime);
+    camera.Update(delta);
 }
 
 void World::Release() noexcept {

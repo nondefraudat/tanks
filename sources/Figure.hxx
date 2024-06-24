@@ -10,22 +10,23 @@ class Renderer;
 class Figure {
 public:
     uint32_t vao, vbo, ebo;
+    float maxMoveSpeed = 20.f, maxRotateSpeed = glm::radians(45.f);
 
-    void Init(Renderer *renderer) noexcept;
+    glm::vec3 position;
+    glm::quat rotation;
+
+    void Init() noexcept;
     void Release() noexcept;
-    void Update(uint64_t deltaTime) noexcept;
+    void Update(float delta) noexcept;
 
-    void Move(int direction) noexcept;
-    void Rotate(int direction) noexcept;
+    void Move(float factor) noexcept;
+    void Rotate(float factor) noexcept;
 
     glm::mat4 Model() noexcept;
 
 private:
     Renderer *renderer = nullptr;
 
-    float movementSpeed = 0.f;
-    float angleSpeed = 0.f;
-
-    glm::mat4 model = { 1.f };
-    glm::quat rotation;
+    float moveSpeed = 0.f; // pxl/sec
+    float rotateSpeed = 0.f; // rad/sec
 };

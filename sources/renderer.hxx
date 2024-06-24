@@ -15,10 +15,7 @@ public:
     ~Renderer() noexcept;
     
     void Target(World *world) noexcept;
-    void Render(uint64_t deltaTime) noexcept;
-
-    void EnableFigure(Figure *figure) noexcept;
-    void DisableFigure(Figure *figure) noexcept;
+    void Render(float delta) noexcept;
 
 private:
     World *world;
@@ -28,7 +25,7 @@ private:
 
     Program program;
 
-    uint64_t deltaCache = 0;
+    float deltaCache = 0.f;
 
     void InitSDL() noexcept;
     void InitOpenGL() noexcept;

@@ -8,10 +8,11 @@ void Camera::Chase(Figure *figure) noexcept {
     this->figure = figure;
 }
 
-void Camera::Update(uint64_t deltaTime) noexcept {
+void Camera::Update(float delta) noexcept {
     // TODO
 }
 
 glm::mat4 Camera::Model() noexcept {
-    return translate(mat4(1.f), { 0.f, 0.f, -1.f });
+    static auto foo = translate(mat4(1.f), { 0.f, 0.f, -1.f });
+    return foo;
 }

@@ -8,7 +8,7 @@ class Figure;
 class Camera {
 public:
     void Chase(Figure *figure) noexcept;
-    void Update(uint64_t deltaTime) noexcept;
+    void Update(float delta) noexcept;
     glm::mat4 Model() noexcept;
 
 private:

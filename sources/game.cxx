@@ -6,7 +6,7 @@ using namespace std;
 Game::Game() noexcept {
     figure = world.Place(Figure());
     renderer.Target(&world);
-    figure->Init(&renderer);
+    figure->Init();
     Camera camera;
     camera.Chase(figure);
     world.PlaceCamera(move(camera));
@@ -25,9 +25,9 @@ void Game::Loop() noexcept {
     isActive = true;
     while (isActive) {
         ProcessEvents();
-        uint64_t deltaTime = DeltaTime();
-        world.Update(deltaTime);
-        renderer.Render(deltaTime);
+        float delta = Delta();
+        world.Update(delta);
+        renderer.Render(delta);
     }
 }
 
@@ -46,30 +46,42 @@ void Game::ProcessEvents() noexcept {
             break;
         }
     }
+    if (left^right) {
+        figure->Rotate(left ? 1.f : -1.f);
+    }
+    else {
+        figure->Rotate(0.f);
+    }
+    if (up^down) {
+        figure->Move(up ? 1.f : -1.f);
+    }
+    else {
+        figure->Move(0.f);
+    }
 }
 
-uint64_t Game::DeltaTime() noexcept {
+float Game::Delta() noexcept {
     static uint64_t timeCache = 0;
     uint64_t currentTime = SDL_GetTicks(); 
     uint64_t deltaTime = currentTime - timeCache;
     timeCache = currentTime;
-    return deltaTime;
+    return float(deltaTime)/1000.f;
 }
 
 void Game::ProcessKey(int key, bool state) noexcept {
     switch (key)
     {
     case SDLK_UP:
-        figure->Move(1*state);
+        up = state;
         break;
     case SDLK_DOWN:
-        figure->Move(-1*state);
+        down = state;
         break;
     case SDLK_LEFT:
-        figure->Rotate(1*state);
+        left = state;
         break;
     case SDLK_RIGHT:
-        figure->Rotate(-1*state);
+        right = state;
         break;
     }
 }

@@ -18,10 +18,13 @@ private:
 
     bool isActive = false;
 
+    bool left = false, right = false,
+            up = false, down = false;
+
     void Loop() noexcept;
 
     void ProcessEvents() noexcept;
-    uint64_t DeltaTime() noexcept;
+    float Delta() noexcept;
 
     void ProcessKey(int key, bool state) noexcept;
 };

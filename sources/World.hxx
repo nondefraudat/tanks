@@ -11,7 +11,7 @@ public:
     void PlaceCamera(Camera &&camera) noexcept;
 
     Figure *Place(Figure &&figure) noexcept;
-    void Update(uint64_t deltaTime) noexcept;
+    void Update(float delta) noexcept;
     void Release() noexcept;
     
     Camera &GetCamera() noexcept;
